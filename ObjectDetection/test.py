@@ -52,7 +52,6 @@ def resize():
         print(item)
         if os.path.isfile(path + "\\" + item):
             im = Image.open(path + "\\" + item)
-            f, e = os.path.splitext(path + "\\" + item)
             imResize = im.resize((24, 24), Image.ANTIALIAS)
             imResize.save(path + "\\" + item, 'JPEG', quality=90)
 

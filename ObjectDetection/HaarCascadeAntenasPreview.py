@@ -9,7 +9,7 @@ imgTest = r'E:\Trabalho\Projeto_Parabolicas\Teste_MachineLearning\MachineLearnin
 img = cv2.imread(imgTest)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 print("Detectando features...")
-sats = sat_cascade.detectMultiScale(gray, 1.05, 2, minSize=(29, 29), maxSize=(50, 50))
+sats = sat_cascade.detectMultiScale(gray, 1.05, 2, minSize=(29, 29), maxSize=(100, 100))
 print("{0} features detectados.".format(len(sats)))
 minval = 230
 maxval = 255
