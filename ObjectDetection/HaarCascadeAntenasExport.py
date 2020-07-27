@@ -18,12 +18,12 @@ maxval = 255
 lower = np.array([minval, minval, minval])
 upper = np.array([maxval, maxval, maxval])
 print("Analisando features...")
-for (x,y,w,h) in sats:
+for (x, y, w, h) in sats:
     out = img[y:y+h, x:x+w]
     mask = cv2.inRange(out, lower, upper)
     HASWHITE = False
     for a in mask:
-        if any(a)>0:
+        if any(a) > 0:
             HASWHITE = True
     if HASWHITE:
         cv2.rectangle(adjusted, (x, y), (x+w, y+h), (0, 255, 255), 2)

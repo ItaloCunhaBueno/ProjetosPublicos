@@ -42,7 +42,7 @@
 #     im.save(file)
 
 from PIL import Image
-import os, sys
+import os
 
 path = r"E:\Trabalho\Projeto_Parabolicas\Teste_MachineLearning\MachineLearning\p"
 dirs = os.listdir(path)
