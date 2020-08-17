@@ -5,13 +5,13 @@ import cv2
 model = r'E:\Trabalho\Projeto_Parabolicas\Teste_MachineLearning\MachineLearning\V5_15stages_45Degree\cascade.xml'
 sat_cascade = cv2.CascadeClassifier(model)
 
-imgTest = r'E:\Trabalho\Projeto_Parabolicas\Teste_MachineLearning\MachineLearning\Test\Test5_proc.tif'
+imgTest = r'E:\Trabalho\Projeto_Parabolicas\Teste_MachineLearning\MachineLearning\Test\test3.jpg'
 img = cv2.imread(imgTest)
 img2 = img.copy()
 adjusted = cv2.convertScaleAbs(img, alpha=0, beta=0) #ajusta contraste
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 print("Detectando features...")
-sats = sat_cascade.detectMultiScale(gray, 1.05, 2, minSize=(29, 29), maxSize=(50, 50))
+sats = sat_cascade.detectMultiScale(gray, 1.05, 2, minSize=(29, 29), maxSize=(100, 100))
 print("{0} features detectados.".format(len(sats)))
 minval = 230
 maxval = 255
@@ -30,7 +30,7 @@ for (x, y, w, h) in sats:
         cv2.rectangle(img2, (x, y), (x + w, y + h), (0, 255, 255), 2)
 
 print("Salvando Imagem...")
-cv2.imwrite(r'E:\Trabalho\Projeto_Parabolicas\Teste_MachineLearning\MachineLearning\Test\MaskV2.tif', adjusted)
+cv2.imwrite(r'E:\Trabalho\Projeto_Parabolicas\Teste_MachineLearning\MachineLearning\Test\test3_proc.jpg', img2)
 print("Concluído")
 # while True:
 #     cv2.imshow("Antes", img)
