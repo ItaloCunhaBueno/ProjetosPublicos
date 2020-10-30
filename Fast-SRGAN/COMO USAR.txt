@@ -1,0 +1,1 @@
+Coloque imagens de baixa resolução na pasta TestInput e execute o arquivo infer.py, resultados estarão na pasta TestOutput

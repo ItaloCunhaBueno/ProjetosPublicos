@@ -4,23 +4,24 @@ import random
 
 screenW = 200
 screenH = 200
+pygame.init()
+screen = pygame.display.set_mode((screenW, screenH))
+COBRA = (0, 255, 0)
+COMIDA = (255, 0, 0)
+BACKGROUND = (255, 255, 255)
 
 def comi(x, y):
-    return pygame.draw.rect(screen, RED, [x, y, 10, 10])
+    return pygame.draw.rect(screen, COMIDA, [x, y, 10, 10])
+
+def qua(x, y):
+        return pygame.draw.rect(screen, COBRA, [x, y, 10, 10])
 
 def drawcobra(corpo):
-    def qua(x, y):
-        return pygame.draw.rect(screen, WHITE, [x, y, 10, 10])
     for x in corpo:
         qua(x[0], x[1])
 
 
-pygame.init()
-screen = pygame.display.set_mode((screenW, screenH))
-WHITE = (0, 255, 0)
-RED = (255, 0, 0)
 cobra = [[200,200], [190, 200], [180, 200], [170, 200]]
-
 comidaposx = random.randrange(0, screenW, 10)
 comidaposy = random.randrange(0, screenH, 10)
 directionx = 10
@@ -37,7 +38,7 @@ while True:
             index = cobra.index(part)
             cobra[index][0] = cobra[index-1][0]
             cobra[index][1] = cobra[index-1][1]
-            screen.fill((0,0,0))
+            screen.fill(BACKGROUND)
             drawcobra(cobra)
             comi(comidaposx, comidaposy)
             pygame.display.flip()
@@ -58,7 +59,7 @@ while True:
                 cobra = cobra[:4]
                 break
         cobra.append([ultimaposx, ultimaposy])
-        screen.fill((0,0,0))
+        screen.fill(BACKGROUND)
         drawcobra(cobra)
         comi(comidaposx, comidaposy)
         pygame.display.flip()
@@ -95,7 +96,7 @@ while True:
         index = cobra.index(part)
         cobra[index][0] = cobra[index-1][0]
         cobra[index][1] = cobra[index-1][1]
-        screen.fill((0,0,0))
+        screen.fill(BACKGROUND)
         drawcobra(cobra)
         comi(comidaposx, comidaposy)
         pygame.display.flip()
@@ -115,7 +116,7 @@ while True:
         if [cabeca[0], cabeca[1]] == part3:
             cobra = cobra[:4]
             break
-    screen.fill((0,0,0))
+    screen.fill(BACKGROUND)
     drawcobra(cobra)
     comi(comidaposx, comidaposy)
     pygame.display.flip()
