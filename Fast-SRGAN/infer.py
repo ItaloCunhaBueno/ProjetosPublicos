@@ -4,8 +4,8 @@ import numpy as np
 import cv2
 import os
 
-INDIR = r'E:\Trabalho\Repos\ProjetosPublicos\Fast-SRGAN\TestInput'
-OUTDIR = r'E:\Trabalho\Repos\ProjetosPublicos\Fast-SRGAN\TestOutput'
+INDIR = r'C:\Users\Italo\Desktop\Nova pasta\Nova pasta'
+OUTDIR = r'C:\Users\Italo\Desktop\Nova pasta\Nova pasta (2)'
 
 parser = ArgumentParser()
 parser.add_argument('--image_dir', type=str, default=INDIR, help='Directory where images are kept.')
