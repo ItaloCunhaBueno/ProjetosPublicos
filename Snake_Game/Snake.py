@@ -92,6 +92,7 @@ while True:
             else:
                 directiony = 0
                 directionx = 10
+
     for part in cobra[::-1][:-1]:
         index = cobra.index(part)
         cobra[index][0] = cobra[index-1][0]
