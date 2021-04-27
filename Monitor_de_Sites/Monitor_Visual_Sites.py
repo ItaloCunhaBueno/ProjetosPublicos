@@ -8,7 +8,7 @@ from base64 import b64decode
 
 
 PAGINA = 'https://vacina.mogidascruzes.sp.gov.br/'
-PBAPIKEY = 'o.KPHtFbpmmjNAeVbx5oDpFiL0fRftaShp'
+PBAPIKEY = ''
 
 pb = Pushbullet(PBAPIKEY)
 
