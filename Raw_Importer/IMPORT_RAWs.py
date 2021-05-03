@@ -5,11 +5,10 @@ from glob import glob
 import threading
 import PySimpleGUIQt as sg
 
-
 sg.ChangeLookAndFeel('SystemDefaultForReal')
 
 Layout = [[sg.Stretch(), sg.Text('Este programa importa RAWs em CR2 para a pasta selecionada subdividindo por data.'), sg.Stretch()],
-[sg.T("")],
+          [sg.T("")],
           [sg.Stretch(), sg.Text("Pasta RAWs:", size=(10, 1)), sg.Input("", do_not_clear=True, size=(40, 1), key='raws'), sg.FolderBrowse("Pasta", size=(10, 1)), sg.Stretch()],
           [sg.Stretch(), sg.Text("Pasta de Saída:", size=(10, 1)), sg.Input("", do_not_clear=True, size=(40, 1), key='saida'), sg.FolderBrowse("Pasta", size=(10, 1)), sg.Stretch()],
           [sg.Stretch(), sg.Button('Executar', focus=True, size=(10, 1)), sg.Exit('Sair', focus=False, size=(10, 1)), sg.Stretch()],
@@ -19,7 +18,9 @@ Layout = [[sg.Stretch(), sg.Text('Este programa importa RAWs em CR2 para a pasta
           [sg.T("Mensagens:")],
           [sg.Output()]]
 
+
 window = sg.Window('Importar CR2s', size=(560, 460)).Layout(Layout)
+
 
 def func():
     files = glob(Origem + r"\**\*.CR2", recursive=True)
@@ -58,7 +59,6 @@ def func():
     print("Arquivos copiados: {0}".format(n1))
     print("Arquivos ignorados: {0}".format(n2))
     window.Refresh()
-
 
 while True:
     event, values = window.Read(timeout=200)

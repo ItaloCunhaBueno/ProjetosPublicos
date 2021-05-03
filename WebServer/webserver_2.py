@@ -79,7 +79,7 @@ Layout = [[sg.T("ONLINE FILE SHARING SYSTEM", font="Arial 12 bold", justificatio
 window = sg.Window('File Sharing System', resizable=False, size=(600, 300)).layout(Layout)
 
 def terminate_thread(thread):
-    if not thread.isAlive():
+    if not thread.is_alive():
         return
 
     exc = ctypes.py_object(SystemExit)
@@ -92,7 +92,7 @@ def terminate_thread(thread):
         raise SystemError("PyThreadState_SetAsyncExc failed")
 
 def run(pasta, user, password):
-    ip = socket.gethostbyname(socket.gethostname())
+    ip = "localhost"
     porta = 8080
     os.chdir(pasta)
     files = os.listdir(pasta)
@@ -163,7 +163,8 @@ def kill():
         for t in enumerate()[1:]:
             terminate_thread(t)
         if index_generated is True:
-            os.remove("index.html")
+            if os.path.isfile("index.html"):
+                os.remove("index.html")
         print("========================")
         print("STATUS: STOPPED")
         window["STOP"].Update(disabled=True)

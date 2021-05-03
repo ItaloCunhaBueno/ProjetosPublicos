@@ -3,7 +3,6 @@ from time import sleep
 import winsound
 from datetime import datetime
 from pushbullet import Pushbullet
-from io import BytesIO
 from base64 import b64decode
 
 
