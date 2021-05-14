@@ -1,29 +1,24 @@
-import csv
-from os import listdir
+import webview
+import sys
+from os import chdir, path
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+import threading
 
-IMAGENS = r"\\10.0.0.21\sao_vicente\LEV_MAVERICK_SV_31_01_21\sv31_01_01\Missions\M01\Images\Ladybug_CameraNo0"
-CSV = r"C:\Users\Italo\Desktop\sv-faltantes.csv"
-DADOS = csv.DictReader(open(CSV), delimiter=";")
-DICTNAMES = {}
-for x in DADOS:
-    ORIG = x["origem"].replace("-", "_")
-    if ORIG not in DICTNAMES:
-        DICTNAMES[ORIG] = {}
-    if x["camera_id"] not in DICTNAMES[ORIG]:
-        DICTNAMES[ORIG][x["camera_id"]] = []
-    if x["image_id"] not in DICTNAMES[ORIG][x["camera_id"]]:
-        DICTNAMES[ORIG][x["camera_id"]].append([x["image_id"], x["event_id"]])
+def startserver():
+    if getattr(sys, 'frozen', False):
+        RUNPATH = path.dirname(sys.executable)
+    elif __file__:
+        RUNPATH = path.dirname(__file__)
+    chdir(RUNPATH)
+    httpd = HTTPServer(('localhost', 8000), SimpleHTTPRequestHandler)
+    httpd.serve_forever()
 
-print([X for X in DICTNAMES])
+Thread1 = threading.Thread(target=startserver)
+Thread1.daemon = True
+Thread1.start()
+webview.create_window('WEBMAP', 'http://localhost:8000')
+webview.start(http_server=True, gui="cef")
 
-ARQUIVOS = ["{0}\{1}".format(IMAGENS, FILE) for FILE in listdir(IMAGENS)]
-for MISS in DICTNAMES["31_01_01"]["Ladybug_CameraNo0"]:
-    IMGID = "{0}.jpg".format(MISS[0])
-    EVNTID = "{0}.jpg".format(MISS[1])
-    CAMINHOFOTO = ""
-    for PATH in ARQUIVOS:
-        if IMGID in PATH:
-            CAMINHOFOTO = PATH
-            break
-    if CAMINHOFOTO:
-        print(IMGID, CAMINHOFOTO)
+
+
+
