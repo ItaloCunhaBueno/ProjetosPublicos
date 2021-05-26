@@ -140,7 +140,7 @@ ABA1_COL2 = [
      sg.Listbox([], key="con_cat_listbox", enable_events=True)],
 ]
 ABA1_COLS = [[sg.Column(ABA1_COL1), sg.Column(ABA1_COL2)]]
-ABA1 = sg.Tab(title="Consultar uma receita", layout=ABA1_COLS, background_color="white")
+ABA1 = sg.Tab(title="Consultar uma receita", layout=ABA1_COLS)
 ABA2_COL1 = [
     [sg.Text("Nome:"), sg.Input(key="in_nome")],
     [
@@ -174,7 +174,7 @@ ABA2_COL2 = [
 ]
 
 ABA2_COLS = [[sg.Column(ABA2_COL1), sg.Column(ABA2_COL2)]]
-ABA2 = sg.Tab(title="Anotar uma receita", layout=ABA2_COLS, background_color="white")
+ABA2 = sg.Tab(title="Anotar uma receita", layout=ABA2_COLS)
 LAYOUT = [[sg.TabGroup([[ABA1, ABA2]])]]
 window = sg.Window("Livro de Receitas", layout=LAYOUT, size=(1200, 600))
 createDB()
@@ -182,8 +182,8 @@ conn = connectDB()
 
 while 1:
     event, values = window.read()
-    print(event)
-    print(values)
+    # print(event)
+    # print(values)
     if event == sg.WINDOW_CLOSED:
         break
 
