@@ -176,6 +176,7 @@ ABA2_COL2 = [
 ABA2_COLS = [[sg.Column(ABA2_COL1), sg.Column(ABA2_COL2)]]
 ABA2 = sg.Tab(title="Anotar uma receita", layout=ABA2_COLS)
 LAYOUT = [[sg.TabGroup([[ABA1, ABA2]])]]
+
 window = sg.Window("Livro de Receitas", layout=LAYOUT, size=(1200, 600))
 createDB()
 conn = connectDB()
