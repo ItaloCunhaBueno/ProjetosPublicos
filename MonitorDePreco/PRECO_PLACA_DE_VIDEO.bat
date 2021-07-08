@@ -1,0 +1,1 @@
+wt.exe python "E:\Trabalho\Repos\ProjetosPublicos\MonitorDePreco\Monitor_PlacaVideo.py"
