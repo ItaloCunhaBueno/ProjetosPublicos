@@ -5,21 +5,23 @@ from glob import glob
 import threading
 import PySimpleGUIQt as sg
 
-sg.ChangeLookAndFeel('SystemDefaultForReal')
+sg.ChangeLookAndFeel("SystemDefaultForReal")
 
-Layout = [[sg.Stretch(), sg.Text('Este programa importa RAWs em CR2 para a pasta selecionada subdividindo por data.'), sg.Stretch()],
-          [sg.T("")],
-          [sg.Stretch(), sg.Text("Pasta RAWs:", size=(10, 1)), sg.Input("", do_not_clear=True, size=(40, 1), key='raws'), sg.FolderBrowse("Pasta", size=(10, 1)), sg.Stretch()],
-          [sg.Stretch(), sg.Text("Pasta de Saída:", size=(10, 1)), sg.Input("", do_not_clear=True, size=(40, 1), key='saida'), sg.FolderBrowse("Pasta", size=(10, 1)), sg.Stretch()],
-          [sg.Stretch(), sg.Button('Executar', focus=True, size=(10, 1)), sg.Exit('Sair', focus=False, size=(10, 1)), sg.Stretch()],
-          [sg.T("")],
-          [sg.ProgressBar(max_value=100, key="prog", orientation="h")],
-          [sg.T("")],
-          [sg.T("Mensagens:")],
-          [sg.Output()]]
+Layout = [
+    [sg.Stretch(), sg.Text("Este programa importa RAWs em CR2 para a pasta selecionada subdividindo por data."), sg.Stretch()],
+    [sg.T("")],
+    [sg.Stretch(), sg.Text("Pasta RAWs:", size=(10, 1)), sg.Input("", do_not_clear=True, size=(40, 1), key="raws"), sg.FolderBrowse("Pasta", size=(10, 1)), sg.Stretch()],
+    [sg.Stretch(), sg.Text("Pasta de Saída:", size=(10, 1)), sg.Input("", do_not_clear=True, size=(40, 1), key="saida"), sg.FolderBrowse("Pasta", size=(10, 1)), sg.Stretch()],
+    [sg.Stretch(), sg.Button("Executar", focus=True, size=(10, 1)), sg.Exit("Sair", focus=False, size=(10, 1)), sg.Stretch()],
+    [sg.T("")],
+    [sg.ProgressBar(max_value=100, key="prog", orientation="h")],
+    [sg.T("")],
+    [sg.T("Mensagens:")],
+    [sg.Output()],
+]
 
 
-window = sg.Window('Importar CR2s', size=(560, 460)).Layout(Layout)
+window = sg.Window("Importar CR2s", size=(560, 460)).Layout(Layout)
 
 
 def func():
@@ -32,10 +34,10 @@ def func():
         n3 += 1
         porgress.UpdateBar(int(n3 / maxfiles * 100))
         window.Refresh()
-        f = open(file, 'rb')
+        f = open(file, "rb")
         nome = os.path.basename(file)
-        tags = process_file(f, details=False, stop_tag='DateTime')
-        data = str(tags['Image DateTime'].values).split(" ")[0]
+        tags = process_file(f, details=False, stop_tag="DateTime")
+        data = str(tags["Image DateTime"].values).split(" ")[0]
         data = data.split(":")
         ano = data[0]
         mes = data[1]
@@ -54,21 +56,22 @@ def func():
             print("ARQUIVO JÁ EXISTE: {0}\\{1}\\{1}-{2}-{3}\\{4}".format(pasta, ano, mes, dia, nome))
             n2 += 1
             window.Refresh()
-    print("-"*55)
+    print("-" * 55)
     print("PROCESSO CONCLUÍDO")
     print("Arquivos copiados: {0}".format(n1))
     print("Arquivos ignorados: {0}".format(n2))
     window.Refresh()
 
+
 while True:
     event, values = window.Read(timeout=200)
-    porgress = window['prog']
-    if event is None or event == 'Sair':
+    porgress = window["prog"]
+    if event is None or event == "Sair":
         break
-    if event == 'Executar':
+    if event == "Executar":
         try:
-            Origem = str(window.FindElement('raws').Get())
-            pasta = str(window.FindElement('saida').Get())
+            Origem = str(window.FindElement("raws").Get())
+            pasta = str(window.FindElement("saida").Get())
             erro = []
             if not os.path.isdir(Origem):
                 erro.append(1)
