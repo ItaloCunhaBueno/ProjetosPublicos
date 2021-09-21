@@ -15,6 +15,8 @@ LAYEROBJ.startEditing()
 
 # ITERA AS FEICOES DENTRO DO LAYER
 for L in LAYEROBJ.getFeatures():
+
+    LAYEROBJ.updateFeature(L)
     pass
 
 # FAZ O COMMIT DAS EDICOES NO LAYER
