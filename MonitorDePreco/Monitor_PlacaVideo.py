@@ -1,12 +1,14 @@
 from requests_html import HTMLSession
+import requests
+requests.urllib3.disable_warnings()
 
-print("ANALISANDO KABUM E TERABYTESHOP...")
+print("ANALISANDO KABUM E TERABYTESHOP...\n")
 
 KABUM = "https://kabum.com.br/hardware/placa-de-video-vga/nvidia/geforce-rtx?page_number=1&page_size=20&facet_filters=&sort=price"
 TERABYTE = "https://www.terabyteshop.com.br/hardware/placas-de-video/nvidia-geforce"
 
 session = HTMLSession(browser_args=["--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36 Edg/89.0.774.68"])
-pagina = session.get(KABUM)
+pagina = session.get(KABUM, verify=False)
 pagina.html.render(scrolldown=10, sleep=1)
 
 LISTA60_TITULO = []
@@ -27,21 +29,23 @@ for E in ELEMENT:
                     if "productCard" in D.attrs["class"]:
                         CARD = D.find("a")[0]
                         TEXTO = CARD.text.split("\n")
-                        TITULO = TEXTO[1]
-                        PRECO = float("".join([p for p in TEXTO[2] if p in "0123456789,"]).replace(",", "."))
+                        TITULO = TEXTO[0]
+                        PRECO = float("".join([p for p in TEXTO[1].split("R$")[-1] if p in "0123456789,"]).replace(",", "."))
                         LINK = list(CARD.absolute_links)[0]
 
-                        if "3060" in TITULO:
+                        if "3060" in TITULO and "RTX" in TITULO:
+
                             LISTA60_TITULO.append(TITULO)
                             LISTA60_PRECO.append(PRECO)
                             LISTA60_LINK.append(LINK)
 
-                        if "3070" in TITULO:
+                        if "3070" in TITULO and "RTX" in TITULO:
+
                             LISTA70_TITULO.append(TITULO)
                             LISTA70_PRECO.append(PRECO)
                             LISTA70_LINK.append(LINK)
 
-pagina = session.get(TERABYTE)
+pagina = session.get(TERABYTE, verify=False)
 pagina.html.render(scrolldown=10, sleep=1)
 ELEMENT = pagina.html.find("div")
 for E in ELEMENT:
@@ -64,12 +68,14 @@ for E in ELEMENT:
                                             if "prod-new-price" in D3.attrs["class"]:
                                                 PRECO = float("".join([p for p in D3.text if p in "0123456789,"]).replace(",", "."))
                                                 if PRECO:
-                                                    if "3060" in TITULO:
+                                                    if "3060" in TITULO and "RTX" in TITULO:
+
                                                         LISTA60_TITULO.append(TITULO)
                                                         LISTA60_PRECO.append(PRECO)
                                                         LISTA60_LINK.append(LINK)
 
-                                                    if "3070" in TITULO:
+                                                    if "3070" in TITULO and "RTX" in TITULO:
+
                                                         LISTA70_TITULO.append(TITULO)
                                                         LISTA70_PRECO.append(PRECO)
                                                         LISTA70_LINK.append(LINK)
@@ -80,6 +86,19 @@ ID60 = LISTA60_PRECO.index(MIN60)
 MIN70 = min(LISTA70_PRECO)
 ID70 = LISTA70_PRECO.index(MIN70)
 
+print("Lista de Placas encontradas:")
+print("")
+print("RTX 3060:")
+for nome60, preco60, link60 in sorted(zip(LISTA60_TITULO, LISTA60_PRECO, LISTA60_LINK), key=lambda x: x[1]):
+    print(f"\tR${preco60} - {nome60}")
+
+print("")
+print("RTX 3070:")
+for nome70, preco70, link70 in sorted(zip(LISTA70_TITULO, LISTA70_PRECO, LISTA70_LINK), key=lambda x: x[1]):
+    print(f"\tR${preco70} - {nome70}")
+
+print("")
+print("-" * 100)
 print("")
 print("MENOR PREÇO 3060:")
 print(LISTA60_TITULO[ID60])
@@ -92,4 +111,4 @@ print(LISTA70_TITULO[ID70])
 print(LISTA70_PRECO[ID70])
 print(LISTA70_LINK[ID70])
 print("")
-input('Pressione ENTER para sair...')
+input("Pressione ENTER para sair...")
