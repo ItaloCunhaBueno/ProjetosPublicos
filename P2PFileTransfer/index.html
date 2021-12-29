@@ -1,0 +1,211 @@
+<html lang="ptbr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/basic.min.css" />
+
+    <script type="application/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.js">
+        </script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>Envio de Arquivos</title>
+</head>
+<style>
+    @keyframes flicker {
+
+        0%,
+        18%,
+        22%,
+        25%,
+        53%,
+        57%,
+        100% {
+            text-shadow:
+                0 0 4px #fff,
+                0 0 11px #fff,
+                0 0 19px #fff,
+                0 0 40px #0fa,
+                0 0 80px #0fa,
+                0 0 90px #0fa,
+                0 0 100px #0fa,
+                0 0 150px #0fa,
+                0 0 255px #0fa;
+        }
+
+        20%,
+        24%,
+        55% {
+            text-shadow: none;
+        }
+    }
+
+    .Corpo {
+        width: 100%;
+        height: 99%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+    }
+
+    body {
+        background-color: rgb(0, 0, 0);
+        font-family: 'Roboto', sans-serif;
+        background-image: radial-gradient(#00000073, rgb(0, 0, 0)), url("https://cdnb.artstation.com/p/assets/images/images/024/995/015/4k/kai-moisch-scanned-old-brick-wall-01.jpg?1584224298");
+        background-size: cover;
+    }
+
+    .material-icons {
+        animation: flicker 1.5s infinite alternate;
+        color: rgb(255, 255, 255);
+        margin: auto;
+        padding: 10px;
+        border-radius: 20px;
+        /* border: 3px solid rgb(255, 255, 255); */
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 64px;
+        /* Preferred icon size */
+        display: inline-block;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        direction: ltr;
+
+        /* Support for all WebKit browsers. */
+        -webkit-font-smoothing: antialiased;
+        /* Support for Safari and Chrome. */
+        text-rendering: optimizeLegibility;
+
+        /* Support for Firefox. */
+        -moz-osx-font-smoothing: grayscale;
+
+        /* Support for IE. */
+        font-feature-settings: 'liga';
+        text-shadow:
+            0 0 7px #fff,
+            0 0 10px #fff,
+            0 0 21px #0fa,
+            0 0 42px #0fa,
+            0 0 82px #0fa,
+            0 0 92px #0fa,
+            0 0 102px #0fa,
+            0 0 151px #0fa,
+            0 0 255px #0fa;
+    }
+
+    .Texto {
+        animation: flicker 1.5s infinite alternate;
+        color: rgb(255, 255, 255);
+        font-family: 'Harlow Solid', sans-serif;
+        font-size: 64px;
+        margin: auto;
+        padding: 10px;
+        text-shadow:
+            0 0 7px #fff,
+            0 0 10px #fff,
+            0 0 21px #0fa,
+            0 0 42px #0fa,
+            0 0 82px #0fa,
+            0 0 92px #0fa,
+            0 0 102px #0fa,
+            0 0 151px #0fa,
+            0 0 255px #0fa;
+    }
+
+    .Elementos {
+        color: rgb(125, 125, 125);
+        margin: auto;
+        width: 90%;
+        padding: 10px;
+        border-radius: 20px;
+        text-align: center;
+
+    }
+
+    .Lista {
+        color: rgb(125, 125, 125);
+        margin: auto;
+        font-family: 'Noto Sans', sans-serif;
+        width: 90%;
+        padding: 10px;
+        border-radius: 20px;
+        text-align: left;
+        line-height: 30px;
+
+    }
+
+    .dropzone {
+        color: rgb(125, 125, 125);
+        font-family: 'Noto Sans', sans-serif;
+        font-size: 32px;
+        text-align: center;
+        border-radius: 20px;
+        width: 95%;
+        padding: 10px;
+        margin: auto;
+        border: 3px solid rgb(255, 255, 255);
+        background-color: rgb(35, 35, 35);
+        box-shadow: 0 0 7px #fff,
+            0 0 10px #fff,
+            0 0 21px #0fa,
+            0 0 151px #0fa,
+            inset 0 0 1.3rem #00ffaa;
+    }
+</style>
+
+<body>
+    <div class="Corpo">
+        <div class="Elementos">
+            <span class="material-icons">upload</span>
+            <span class="Texto">Envio de Arquivos</span>
+            <span class="material-icons">upload</span>
+        </div>
+        <form method="POST" action='/upload' class="dropzone dz-clickable" id="dropper" enctype="multipart/form-data">
+            <div class="dz-message" data-dz-message><span>Clique ou arraste arquivos aqui para enviar.</span></div>
+        </form>
+
+        <script type="application/javascript">
+            Dropzone.options.dropper = {
+                paramName: 'file',
+                chunking: true,
+                forceChunking: true,
+                url: '/upload',
+                maxFilesize: 50000, // megabytes
+                chunkSize: 1000000, // bytes
+                createImageThumbnails: true,
+            }
+        </script>
+        <div class="Lista">
+            <li>Arraste arquivos para a área de transfêrencia ou clique nela para selecionar o arquivo a ser enviado.
+            </li>
+            <li>O host da página receberá os arquivos na pasta Downloads.</li>
+            <li>É possível enviar multiplos arquivos ao mesmo tempo, para isto, basta selecionar mais de um arquivo.
+            </li>
+            <li>O tamanho máximo de arquivo foi configurado para 50 gigabytes.</li>
+            <li>Os arquivos não são guardados em nuvem, são enviados diretamente para o host.</li>
+            <li>O servidor é executado na rede interna, portanto, é preciso estar na mesma rede para acessar esta página
+                e
+                enviar arquivos.</li>
+            <li><b>ATENÇÃO: devido a um erro em como o componente de upload lida com a barra de progresso, a mesma pode
+                    aparecer completa antes do termino do envio do arquivo.
+                    Para assegurar que o envio foi completado, espere até que a barra de progresso desapareça.
+                </b></li>
+        </div>
+        <footer style="font-size: 12px; color:gray; text-align: right; font-family: 'Noto Sans';">
+            Autor: Italo Cunha Bueno -
+            <a href="mailto:italo.bueno@geoja.com.br">italo.bueno@geoja.com.br</a>
+        </footer>
+</body>
+
+</html>
