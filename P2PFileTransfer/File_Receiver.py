@@ -11,7 +11,7 @@ log = logging.getLogger("werkzeug")
 log.disabled = True
 
 # DEFINE A PASTA DE DOWNLOADS DO WINDOWS ONDE OS ARQUIVOS SERÃO SALVOS
-DOWNLOADS_FOLDER = Path(f"{Path.home()}\Downloads")
+DOWNLOADS_FOLDER = Path(f"{Path.home()}/Downloads")
 if not DOWNLOADS_FOLDER.exists():
     DOWNLOADS_FOLDER.mkdir(parents=True)
 

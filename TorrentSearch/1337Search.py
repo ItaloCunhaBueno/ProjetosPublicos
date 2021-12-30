@@ -25,8 +25,8 @@ while True:
         KEYWORD = Window['keywords'].Get()
         if KEYWORD not in ['', ' ', None]:
             search = KEYWORD.lower().replace(" ", "+")
-            URL = r'https://1337x.to/search/{0}/1/'.format(search)
-            Domain = r'https://1337x.to'
+            URL = r'https://1377x.to/search/{0}/1/'.format(search)
+            Domain = r'https://1377x.to'
             headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"}
             site = requests.get(URL, headers=headers).text
             soup = BeautifulSoup(site, features="lxml")
