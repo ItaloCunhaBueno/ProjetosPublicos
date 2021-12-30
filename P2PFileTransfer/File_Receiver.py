@@ -95,29 +95,58 @@ def upload():
     return make_response(("Pedaço enviado.", 200))
 
 
-# GUARDA O IP DO SERVIDOR
-def serverIP():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    URL = s.getsockname()[0]
-    s.close()
-    return URL
+# ESCOLHE O IP DO SERVIDOR
+def chooseIP():
+    # LISTA TODOS OS IPs DO SERVIDOR E ATRIBUI UMA LETRA A ELE
+    LETRAS = "abcdefghijklmnopqrstuvwxyz"
+    IPs = sorted([i[4][0] for i in socket.getaddrinfo(socket.gethostname(), None) if ":" not in i[4][0]])
+    IPs = dict(zip(LETRAS, IPs))
+
+    # SE A REDE POSSUIR MAIS DE UM IP, PERGUNTA AO USUÁRIO QUAL ELE DESEJA USAR
+    if len(IPs) > 1:
+
+        # PRINTA MENSAGEM COM TODOS OS IPS
+        click.echo("#" * 80)
+        click.echo("# Foram encontrados multiplos IPs na sua rede, por favor, escolha o IP do servidor:")
+
+        for letra, ip in IPs.items():
+            click.echo(f"# {letra}) {ip}")
+
+        click.echo("#" * 80)
+        # SOLICITA O INPUT DO IP DESEJADO
+        IP = input("# Digite a letra: ")
+
+        # CASO O INPUT SEJA INVÁLIDO, FECHA O PROGRAMA
+        if IP not in IPs:
+            click.echo("# Letra inválida.")
+            input("# Pressione ENTER para sair.")
+            exit()
+
+        IP = IPs[IP]
+
+    # CASO NÃO HAJA MAIS DE UM IP, O SERVIDOR SERÁ O PRIMEIRO IP DA REDE
+    else:
+        IP = IPs[LETRAS[0]]
+
+    return IP
 
 
 # SE O ARQUIVO FOR EXECUTADO DIRETAMENTE, INICIA O SERVIDOR
 if __name__ == "__main__":
 
+    # ESCOLHE O IP DO SERVIDOR
+    SERVERIP = chooseIP()
+
     # IMPORTA O SERVIDOR WSGI
     from waitress import serve
 
     # PRINTA ALGUMAS MENSAGENS
-    print("\n")
-    print("#" * 80)
-    print(f"# Compartilhe este endereço para receber os arquivos: 'http://{serverIP()}:1337/'")
-    print(f"# Os arquivos são recebidos na pasta '{DOWNLOADS_FOLDER}'")
-    print("# Para fechar o servidor, pressione CTRL+C ou apenas feche esta janela.")
-    print("#" * 80)
-    print("\n")
+    MENSAGEM = f"""\n################################################################################
+# Compartilhe este endereço para receber os arquivos: 'http://{SERVERIP}:1337/'")
+# Os arquivos são recebidos na pasta '{DOWNLOADS_FOLDER}'
+# Para fechar o servidor, pressione CTRL+C ou apenas feche esta janela.
+################################################################################"""
+    print(MENSAGEM)
 
     # INICIA O SERVIDOR
-    serve(app, host="0.0.0.0", port=1337)
+    serve(app, host=SERVERIP, port=1337)
