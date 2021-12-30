@@ -145,7 +145,7 @@ if __name__ == "__main__":
 # Compartilhe este endereço para receber os arquivos: 'http://{SERVERIP}:1337/'")
 # Os arquivos são recebidos na pasta '{DOWNLOADS_FOLDER}'
 # Para fechar o servidor, pressione CTRL+C ou apenas feche esta janela.
-################################################################################"""
+################################################################################\n"""
     print(MENSAGEM)
 
     # INICIA O SERVIDOR
