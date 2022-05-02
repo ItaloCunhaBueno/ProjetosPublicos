@@ -3,7 +3,7 @@ import PySimpleGUIQt as sg
 from time import sleep
     
 
-sg.theme('Reddit')
+sg.theme('SystemDefaultForReal')
 
 Layout = [[sg.T("Tecla para iniciar:"), sg.I(key='in', size=(20, 1))],
           [sg.T("Tecla acionada:"), sg.I(key='do', size=(20, 1))], 

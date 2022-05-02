@@ -34,6 +34,7 @@ def load_words(n):
 # LAYOUT DO PROGRAMA
 LAYOUT = [
     [sg.Stretch(), sg.T("Wordle Solver", font=("Calibri bold", 14)), sg.Stretch()],
+    [sg.HorizontalSeparator()],
     [sg.T("Número de letras:", font=font), sg.Spin(values=[4, 5, 6, 7, 8, 9, 10, 11], initial_value=11, key="num_letters", change_submits=True, font=font), sg.Stretch()],
     [sg.T("Letras amarelas (todas juntas sem espaço):", font=font), sg.InputText(size=(10, 0.8), key="letras_amarelas", background_color="#fcffa3", font=font), sg.Stretch()],
     [sg.T("Letras cinzas (todas juntas sem espaço):     ", font=font), sg.InputText(size=(10, 0.8), key="letras_cinzas", background_color="#bfbfbf", font=font), sg.Stretch()],
@@ -42,7 +43,7 @@ LAYOUT = [
         sg.Column(layout=[[sg.InputText(size=(4, 0.8), key=x, background_color="#b0e09b", justification="center", font=font) for x in range(11)]]),
         sg.Column(layout=[[sg.Stretch()]]),
     ],
-    [sg.Stretch(), sg.Button("Sugestão", key="solve", size=(10, 1), font=font), sg.Stretch()],
+    [sg.Stretch(), sg.Button("Sugestão", key="solve", size=(10, 1), font=font), sg.Button("Limpar", key="limpa", size=(10, 1), font=font), sg.Stretch()],
     [sg.HorizontalSeparator()],
     [sg.Output(key="output", size=(60, 20), font=font)],
 ]
@@ -58,6 +59,17 @@ while True:
 
     # GUARDA O NUMERO DE LETRAS SELECIONADAS
     NLETRAS = VALUE["num_letters"]
+
+    # LIMPA TODOS OS WIDGETS DA JANELA
+    if EVENT == "limpa":
+        WINDOW["output"].update("")
+        WINDOW["letras_amarelas"].update("")
+        WINDOW["letras_cinzas"].update("")
+
+        for l in range(0, 11):
+            WINDOW[l].update("")
+
+        WINDOW.Refresh()
 
     # FAZ O UPDATE DO LAYOUT QUANDO MUDA O NUMERO DE LETRAS
     if EVENT == "num_letters":
@@ -89,77 +101,82 @@ while True:
 
         # LISTA AS LETRAS CINZAS
         CINZAS = list(VALUE["letras_cinzas"])
+        
+        if [CHAR for CHAR in VALUES if CHAR in CINZAS]:
+            sg.PopupError("ERRO: Mesma letra nos campos Cinza e Verde, verifique se a letra verde está correta, se sim, remova a mesma letra do campo Cinza.")
+        
+        else:
 
-        # SE FOI DIGITADO ALGUMA LETRA NO PROGRAMA PROCEDE
-        if VALUES or AMARELAS or CINZAS:
+            # SE FOI DIGITADO ALGUMA LETRA NO PROGRAMA PROCEDE
+            if VALUES or AMARELAS or CINZAS:
 
-            # LISTA DE PALAVRAS COM O NUMERO DE LETRAS SELECIONADO
-            WORDS = load_words(NLETRAS)
+                # LISTA DE PALAVRAS COM O NUMERO DE LETRAS SELECIONADO
+                WORDS = load_words(NLETRAS)
 
-            # GUARDA AS PALAVRAS QUE BATEM COM AS LETRAS VERDES OU AMARELAS
-            MATCH = []
+                # GUARDA AS PALAVRAS QUE BATEM COM AS LETRAS VERDES OU AMARELAS
+                MATCH = []
 
-            # ITERA AS PALAVRAS DO DICIONARIO
-            for word in WORDS:
+                # ITERA AS PALAVRAS DO DICIONARIO
+                for word in WORDS:
 
-                # CONTA A QUANTIDADE DE LETRAS DA PALAVRA QUE BATEM COM AS LETRAS VERDES
-                N_MATCHS = 0
+                    # CONTA A QUANTIDADE DE LETRAS DA PALAVRA QUE BATEM COM AS LETRAS VERDES
+                    N_MATCHS = 0
 
-                # CONTA A QUANTIDADE DE LETRAS DA PALAVRA QUE BATEM COM AS LETRAS AMARELAS
-                A_MATCHS = 0
+                    # CONTA A QUANTIDADE DE LETRAS DA PALAVRA QUE BATEM COM AS LETRAS AMARELAS
+                    A_MATCHS = 0
 
-                # ITERA AS LETRAS DA PALAVRA
-                for e, l in enumerate(word):
+                    # ITERA AS LETRAS DA PALAVRA
+                    for e, l in enumerate(word):
 
-                    # SE A LETRA DA PALAVRA FOR IGUAL A UMA LETRA VERDE COMPUTA ACERTO
-                    if l == DICT[e]:
-                        N_MATCHS += 1
+                        # SE A LETRA DA PALAVRA FOR IGUAL A UMA LETRA VERDE COMPUTA ACERTO
+                        if l == DICT[e]:
+                            N_MATCHS += 1
 
-                    # SE A LETRA DA PALAVRA FOR IGUAL A UMA LETRA AMARELA COMPUTA ACERTO
-                    if l in AMARELAS:
-                        A_MATCHS += 1
+                        # SE A LETRA DA PALAVRA FOR IGUAL A UMA LETRA AMARELA COMPUTA ACERTO
+                        if l in AMARELAS:
+                            A_MATCHS += 1
 
-                # SE EXISTE LETRAS AMARELAS A CONDICAO DEVE SER FEITA COM A QUANTIDADE DE LETRAS AMARELAS E VERDES
-                if AMARELAS:
-                    if N_MATCHS == len(VALUES) and A_MATCHS == len(AMARELAS):
-                        MATCH.append(word)
+                    # SE EXISTE LETRAS AMARELAS A CONDICAO DEVE SER FEITA COM A QUANTIDADE DE LETRAS AMARELAS E VERDES
+                    if AMARELAS:
+                        if N_MATCHS >= len(VALUES) and A_MATCHS >= len(AMARELAS):
+                            MATCH.append(word)
 
-                # CASO CONTRARIO APENAS AS VERDES
-                else:
-                    if N_MATCHS == len(VALUES):
-                        MATCH.append(word)
+                    # CASO CONTRARIO APENAS AS VERDES
+                    else:
+                        if N_MATCHS >= len(VALUES):
+                            MATCH.append(word)
 
-            # CASO TENHA ALGUMA PALAVRA NA LISTA DE ACERTOS
-            if MATCH:
-                FILTRO = []
+                # CASO TENHA ALGUMA PALAVRA NA LISTA DE ACERTOS
+                if MATCH:
+                    FILTRO = []
 
-                # ITERA AS PALVRAS
-                for M in MATCH:
+                    # ITERA AS PALVRAS
+                    for M in MATCH:
 
-                    # IDENTIFICA QUAIS LETRAS CINZAS ESTAO NA PALAVRA
-                    LETRASCINZAS = [c for c in M if c in CINZAS]
+                        # IDENTIFICA QUAIS LETRAS CINZAS ESTAO NA PALAVRA
+                        LETRASCINZAS = [c for c in M if c in CINZAS]
 
-                    # CASO NAO TENHA LETRAS CINZAS PRINTA A PALAVRA
-                    if not LETRASCINZAS:
-                        FILTRO.append(M)
+                        # CASO NAO TENHA LETRAS CINZAS PRINTA A PALAVRA
+                        if not LETRASCINZAS:
+                            FILTRO.append(M)
 
-                if FILTRO:
-                    for F in FILTRO:
-                        print(F)
+                    if FILTRO:
+                        for F in FILTRO:
+                            print(F)
 
+                    else:
+                        print("Nenhum Resultado")
+
+                # CASO NAO TENHA ENCONTRADO PALAVRAS PRINTA O RESULTADO VAZIO
                 else:
                     print("Nenhum Resultado")
 
-            # CASO NAO TENHA ENCONTRADO PALAVRAS PRINTA O RESULTADO VAZIO
+                # ATUALIZA A JANELA
+                WINDOW.Refresh()
+
+            # CASO NENHUMA LETRA SEJA DIGITADA NA JANELA DE INPUT EXIBE A MENSAGEM DE ERRO
             else:
-                print("Nenhum Resultado")
-
-            # ATUALIZA A JANELA
-            WINDOW.Refresh()
-
-        # CASO NENHUMA LETRA SEJA DIGITADA NA JANELA DE INPUT EXIBE A MENSAGEM DE ERRO
-        else:
-            sg.PopupError("ERRO: Nenhuma letra foi inserida")
+                sg.PopupError("ERRO: Nenhuma letra foi inserida")
 
     # CASO O PROGRAMA SEJA FECHADO CORTA O MAIN LOOP
     if EVENT in (None, "Exit"):
