@@ -27,7 +27,7 @@ class SpotDL(App):
 
     # PARA QUE O CLIENT SPOTIFY NAO SUMA E PRECISO CRIAR ESSE EVENT LOOP
     LOOP = new_event_loop()
-    SPOTIFY_CLIENT = Spotdl(client_id="7942afc011f04ce8b9218898d06ef9c9", client_secret="399367c96796405aa898a1cec2f6021e", headless=True, loop=LOOP)
+    SPOTIFY_CLIENT = Spotdl(client_id="", client_secret="", headless=True, loop=LOOP)
 
     BINDINGS: ClassVar[list[tuple]] = [
         ("escape", "quit", "Sair"),
