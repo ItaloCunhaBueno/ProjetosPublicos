@@ -1,10 +1,11 @@
-from exifread import process_file
 import os
-from shutil import copy
 from glob import glob
-import PySimpleGUIQt as sg
-from os.path import join, dirname, isfile, isdir, basename
+from os.path import basename, dirname, isdir, isfile, join
+from shutil import copy
 from threading import Thread
+
+import PySimpleGUIQt as sg
+from exifread import process_file
 
 sg.ChangeLookAndFeel("SystemDefaultForReal")
 
@@ -33,22 +34,14 @@ def threaded(fn):
 
 
 def listfiles(origem):
-
-    """
-    LISTA TODAS AS FOTOS QUE SERÃO IMPORTADAS
-    """
-
+    """LISTA TODAS AS FOTOS QUE SERÃO IMPORTADAS"""
     print("Listando arquivos...")
     FILES = glob(origem + r"\**\*.CR2", recursive=True)
     return FILES
 
 
 def defineOutput(file, outputfolder):
-
-    """
-    LE O ARQUIVO E DEFINE O LOCAL DE OUTPUT
-    """
-
+    """LE O ARQUIVO E DEFINE O LOCAL DE OUTPUT"""
     OUTPUT = None
 
     with open(file, "rb") as F:
@@ -65,11 +58,7 @@ def defineOutput(file, outputfolder):
 
 
 def copyphoto(orig, dest):
-
-    """
-    CRIA O DESTINO E COPIA O ARQUIVO
-    """
-
+    """CRIA O DESTINO E COPIA O ARQUIVO"""
     FOLDERSNAME = dirname(dest).split("\\")
 
     if not isdir(join(*FOLDERSNAME[:-1])):
@@ -91,7 +80,6 @@ def copyphoto(orig, dest):
 
 @threaded
 def main(ORIGFOLDER, DESTFOLDER, WINDOW):
-
     FILES = listfiles(ORIGFOLDER)
     COUNTFILES = len(FILES)
     COUNT = 0
@@ -105,7 +93,7 @@ def main(ORIGFOLDER, DESTFOLDER, WINDOW):
 
     print("-" * 55)
     print("PROCESSO CONCLUÍDO")
-    print("Arquivos processados: {0}".format(COUNT))
+    print(f"Arquivos processados: {COUNT}")
     WINDOW.Refresh()
 
 
@@ -129,7 +117,6 @@ while True:
             ERROS = True
 
         if not ERROS:
-
             main(ORIGEM, DESTINO, WINDOW)
 
 WINDOW.close()
