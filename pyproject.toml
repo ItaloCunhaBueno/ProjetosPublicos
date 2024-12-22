@@ -1,0 +1,61 @@
+[tool.ruff]
+fix = true
+indent-width = 4
+output-format = "full"
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+line-length = 255
+target-version = "py312"
+
+[tool.ruff.lint]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+fixable = ["ALL"]
+unfixable = [
+    "E402", # NAO CORRIGE ERROS DE IMPORTACAO FORA DO TOPO DO ARQUIVO
+    "F401", # NAO CORRIGE ERROS DE IMPORTACAO NAO UTILIZADA
+    "B905", # NAO CORRIGE ERROS DE ZIP SEM VALOR DE 'strict'
+]
+select = ["ALL"]
+ignore = [
+    # "D211",    # IGNORA NO BLANK LINES BEFORE CLASS
+    "D212",    # IGNORA MULTI-LINE-SUMMARY PRIMEIRA LINHA
+    "D100",    # IGNORA FALTA DE DOCSTRING NOS ARQUIVOS
+    "D401",    # IGNORA DOCSTRING NAO ESTAR EM IMPERATIVO
+    "DTZ001",  # IGNORA FALTA DE TIMEZONE EM FUNCOES DATETIME
+    "DTZ005",  # IGNORA FALTA DE TIMEZONE EM FUNCOES DATETIME
+    "DTZ007",  # IGNORA FALTA DE TIMEZONE EM FUNCOES DATETIME
+    "E402",    # IGNORA ERROS DE IMPORTACAO FORA DO TOPO DO ARQUIVO
+    "E501",    # IGNORA LINHAS MUITO LONGAS
+    "E741",    # IGNORA O USO DE CARACTERES AMBIGUOS COMO NOME DE VARIAVEIS
+    "ERA001",  # IGNORA CODIGO COMENTADO
+    "INP001",  # IGNORA FALTA DE __init__.py
+    "PLR2004", # IGNORA USO DE VALOR MAGICO
+    "S608",    # IGNORA SQL INJECTION
+    "T201",    # IGNORA USO DE PRINT
+    "T203",    # IGNORA USO DE PPRINT
+    "TRY002",  # IGNORA CUSTOM EXCEPTION
+    "TRY003",  # IGNORA MENSAGENS LONGAS FORA DA CLASSE EXCEPTION
+]
+[tool.ruff.lint.pylint]
+max-args = 10

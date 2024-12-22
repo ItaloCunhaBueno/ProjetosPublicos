@@ -1,0 +1,40 @@
+{
+	"$schema": "../gen/schemas/desktop-schema.json",
+	"identifier": "default",
+	"description": "Capability for the main window",
+	"windows": ["main"],
+	"permissions": [
+		"core:default",
+		"shell:default",
+		"shell:allow-open",
+		"shell:allow-execute",
+		"shell:allow-kill",
+		"shell:allow-spawn",
+		"fs:default",
+		"fs:allow-read",
+		"fs:allow-write",
+		"fs:allow-create",
+		"fs:allow-remove",
+		"fs:allow-rename",
+		"fs:allow-resource-read",
+		"fs:allow-resource-write",
+		"fs:allow-resource-read-recursive",
+		"fs:allow-resource-write-recursive",
+		{
+			"identifier": "fs:scope",
+			"allow": [
+				{
+					"path": "*"
+				},
+				{
+					"path": "**/*"
+				}
+			]
+		},
+		"sql:default",
+		"sql:allow-close",
+		"sql:allow-execute",
+		"sql:allow-load",
+		"sql:allow-select"
+	]
+}

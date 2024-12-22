@@ -1,16 +1,20 @@
-import os
-from glob import glob
-from os.path import basename, dirname, isdir, isfile, join
+#
+#   IMPORTA ARQUIVOS RAW CR2 E CR3 PARA A PASTA DESTINO ORGANIZANDO EM SUBPASTAS DIVIDIDAS POR DATA
+#
+
+from pathlib import Path
 from shutil import copy
 from threading import Thread
 
+import exiv2
 import PySimpleGUIQt as sg
-from exifread import process_file
 
-sg.ChangeLookAndFeel("SystemDefaultForReal")
+exiv2.enableBMFF()  # NECESSARIO PARA QUE A BIBLIOTECA EXIV2 FUNCIONE COM ARQUIVOS CR3
+sg.ChangeLookAndFeel("SystemDefaultForReal")  # DEFINE O ESTILO DA INTERFACE PARA O PADRAO DO SISTEMA
 
+# INTERFACE GRAFICA
 LAYOUT = [
-    [sg.Stretch(), sg.Text("Este programa importa RAWs em CR2 para a pasta selecionada subdividindo por data."), sg.Stretch()],
+    [sg.Stretch(), sg.Text("Este programa importa RAWs em CR2 e CR3 para a pasta selecionada subdividindo por data."), sg.Stretch()],
     [sg.T("")],
     [sg.Stretch(), sg.Text("Pasta RAWs:", size=(10, 1)), sg.Input("", do_not_clear=True, size=(40, 1), key="raws"), sg.FolderBrowse("Pasta", size=(10, 1)), sg.Stretch()],
     [sg.Stretch(), sg.Text("Pasta de Saída:", size=(10, 1)), sg.Input("", do_not_clear=True, size=(40, 1), key="saida"), sg.FolderBrowse("Pasta", size=(10, 1)), sg.Stretch()],
@@ -25,6 +29,8 @@ WINDOW = sg.Window("Importar CR2s", layout=LAYOUT, size=(560, 460))
 
 
 def threaded(fn):
+    """DECORADOR QUE TRANSFORMA A FUNCAO EM SUA PROPRIA THREAD."""
+
     def wrapper(*args, **kwargs):
         thread = Thread(target=fn, args=args, kwargs=kwargs)
         thread.start()
@@ -34,69 +40,114 @@ def threaded(fn):
 
 
 def listfiles(origem):
-    """LISTA TODAS AS FOTOS QUE SERÃO IMPORTADAS"""
+    """LISTA TODAS AS FOTOS QUE SERÃO IMPORTADAS.
+
+    Arguments:
+    ---------
+        origem: Caminho de origem do arquivo
+
+    Return:
+    ------
+        FILES: Lista de arquivos a serem processados
+
+    """
     print("Listando arquivos...")
-    FILES = glob(origem + r"\**\*.CR2", recursive=True)
-    return FILES
+    files = list(origem.rglob("*.CR2")) + list(origem.rglob("*.CR3"))
+    return files
 
 
-def defineOutput(file, outputfolder):
-    """LE O ARQUIVO E DEFINE O LOCAL DE OUTPUT"""
-    OUTPUT = None
+def define_output(file, outputfolder):
+    """LE O METADATA DE DATA DO ARQUIVO E DEFINE O LOCAL DE SAIDA.
 
-    with open(file, "rb") as F:
-        NOME = basename(file)
-        TAGS = process_file(F, details=False, stop_tag="DateTime")
-        DATA = str(TAGS["Image DateTime"].values).split(" ")[0]
-        DATA = DATA.split(":")
-        ANO = DATA[0]
-        MES = DATA[1]
-        DIA = DATA[2]
-        OUTPUT = join(f"{outputfolder}", f"{ANO}", f"{ANO}-{MES}-{DIA}", f"{NOME}")
+    Arguments:
+    ---------
+        file: Caminho de origem do arquivo
+        outputfolder: Pasta de destino do arquivo
 
-    return OUTPUT
+    Return:
+    ------
+        OUTPUT: Caminho de destino do arquivo
 
+    """
+    output = None
 
+    nome = file.name
+    img = exiv2.ImageFactory.open(str(file))
+    img.readMetadata()
+    tags = img.exifData()
+    data = None
+    for tag in tags:
+        current_tag = tag.key()
+        tag_val = tag.value()
+        if current_tag == "Exif.Image.DateTime":
+            data = str(tag_val).split(" ")[0].split(":")
+            break
+    if data:
+        ano = data[0]
+        mes = data[1]
+        dia = data[2]
+        output = Path(outputfolder, ano, f"{ano}-{mes}-{dia}", nome)
+
+    return output
+
+@threaded
 def copyphoto(orig, dest):
-    """CRIA O DESTINO E COPIA O ARQUIVO"""
-    FOLDERSNAME = dirname(dest).split("\\")
+    """CRIA O DESTINO E COPIA O ARQUIVO.
 
-    if not isdir(join(*FOLDERSNAME[:-1])):
-        os.mkdir(join(*FOLDERSNAME[:-1]))
+    Arguments:
+    ---------
+        orig: Caminho de origem do arquivo
+        dest: Caminho de destino do arquivo
 
-    if not isdir(join(*FOLDERSNAME)):
-        os.mkdir(join(*FOLDERSNAME))
+    """
+    folder_name = dest.parents[0]
 
-    if not isfile(dest):
+    if not folder_name.is_dir():
+        folder_name.mkdir(parents=True)
+
+    if not dest.is_file():
         print(f"Copiando {orig}...")
-
         copy(orig, dest)
 
+        # COPIA TAMBEM O ARQUIVO XMP CASO EXISTA
+        if Path(f"{orig}.xmp").is_file():
+            copy(f"{orig}.xmp", f"{dest}.xmp")
     else:
-        print(f"Ignorando {orig}...")
-
-    return 1
+        print(f"Ignorando {orig}, arquivo já existente na pasta destino...")
 
 
 @threaded
-def main(ORIGFOLDER, DESTFOLDER, WINDOW):
-    FILES = listfiles(ORIGFOLDER)
-    COUNTFILES = len(FILES)
-    COUNT = 0
+def main(origfolder, destfolder, window):
+    """PROCESSO PRINCIPAL.
 
-    for FILE in FILES:
-        DEST = defineOutput(FILE, DESTFOLDER)
-        N = copyphoto(FILE, DEST)
-        COUNT += N
-        WINDOW["prog"].UpdateBar((COUNT * 100) / COUNTFILES)
-        WINDOW.Refresh()
+    Arguments:
+    ---------
+        origfolder: Pasta de origem dos arquivos
+        destfolder: Pasta de destino dos arquivos
+        window: Interface grafica
+
+    """
+    files = listfiles(origfolder)
+    count_files = len(files)
+    count = 0
+
+    for file in files:
+        dest = define_output(file, destfolder)
+        if dest:
+            copyphoto(file, dest)
+        else:
+            print(f"Arquivo {file} não possui metadata de data, ignorando...")
+        count += 1
+        window["prog"].UpdateBar((count * 100) / count_files)
+        window.Refresh()
 
     print("-" * 55)
     print("PROCESSO CONCLUÍDO")
-    print(f"Arquivos processados: {COUNT}")
-    WINDOW.Refresh()
+    print(f"Arquivos processados: {count}")
+    window.Refresh()
 
 
+# MAIN LOOP DA INTERFACE GRAFICA
 while True:
     event, values = WINDOW.Read()
 
@@ -104,15 +155,15 @@ while True:
         break
 
     if event == "Executar":
-        ORIGEM = values["raws"]
-        DESTINO = values["saida"]
+        ORIGEM = Path(values["raws"])
+        DESTINO = Path(values["saida"])
         ERROS = False
 
-        if not os.path.isdir(ORIGEM):
+        if not ORIGEM.is_dir():
             sg.PopupError("ERRO: O caminho 'Pasta RAWs' não existe.")
             ERROS = True
 
-        if not os.path.isdir(DESTINO):
+        if not DESTINO.is_dir():
             sg.PopupError("ERRO: O caminho 'Pasta de Saída' não existe.")
             ERROS = True
 
