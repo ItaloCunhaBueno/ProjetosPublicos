@@ -114,15 +114,15 @@ def copyphoto(orig: Path, output_folder: Path, quantidade: int) -> None:
 
     if not dest.is_file():
         print(f"Copiando {orig}...")
-        copy(orig, dest)
+        _ = copy(orig, dest)
 
         # COPIA TAMBEM O ARQUIVO XMP CASO EXISTA
         if Path(f"{orig}.xmp").is_file():
-            copy(f"{orig}.xmp", f"{dest}.xmp")
+            _ = copy(f"{orig}.xmp", f"{dest}.xmp")
     else:
         print(f"Ignorando {orig}, arquivo já existente na pasta destino...")
 
-    barra_progresso.set_value(f"{float(barra_progresso.value.replace("%", "")) + (1/quantidade * 100):.2f}%")
+    barra_progresso.set_value(f"{float(barra_progresso.value.replace('%', '')) + (1 / quantidade * 100):.2f}%")
     barra_progresso.update()
 
 
@@ -130,7 +130,7 @@ def copyphoto(orig: Path, output_folder: Path, quantidade: int) -> None:
 def seleciona_pasta(elemento: ui.input) -> None:
     """SELECIONA A PASTA PARA O CAMPO INPUT."""
     window = Tk()
-    window.wm_attributes("-topmost", 1)
+    _ = window.wm_attributes("-topmost", 1)
     window.withdraw()
     caminho = askdirectory(mustexist=True, initialdir=Path.home(), parent=window)
     if caminho not in ["", ".", None]:
