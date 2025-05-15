@@ -2,11 +2,11 @@
 	import { Toaster as Sonner } from "svelte-sonner";
 	import { mode } from "mode-watcher";
 
-	let { ...restProps } = $props();
+	let restProps = $props();
 </script>
 
 <Sonner
-	theme={mode.current}
+	theme={$mode}
 	class="toaster group"
 	toastOptions={{
 		classes: {
